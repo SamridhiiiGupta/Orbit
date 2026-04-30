@@ -1,7 +1,9 @@
 [build]
 builder = "nixpacks"
+buildCommand = "npx prisma generate"
 
 [deploy]
+preDeployCommand = "npx prisma db push"
 startCommand = "npx prisma generate && npx prisma db push && node src/index.js"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 30

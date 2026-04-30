@@ -1,4 +1,4 @@
-<div align="center"
+<div align="center">
 
 <img src="https://img.shields.io/badge/Status-Live-brightgreen?style=for-the-badge" />
 <img src="https://img.shields.io/badge/Deployed%20on-Railway-blueviolet?style=for-the-badge&logo=railway" />

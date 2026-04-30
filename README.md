@@ -393,7 +393,7 @@ VITE_API_URL="https://your-backend.railway.app"
 
 [![GitHub](https://img.shields.io/badge/GitHub-SamridhiiiGupta-181717?style=for-the-badge&logo=github)](https://github.com/SamridhiiiGupta/Orbit)
 
-*Built solo in under 48 hours as a full-stack assignment.*
+*Built solo in under 24 hours as a full-stack assignment.*
 
 </div>
 

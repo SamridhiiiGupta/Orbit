@@ -1,7 +1,7 @@
 <div align="center">
 
 <img src="https://img.shields.io/badge/Status-Live-brightgreen?style=for-the-badge" />
-<img src="https://img.shields.io/badge/Deployed%20on-Railway-blueviolet?style=for-the-badge&logo=railway" />
+<img src="https://img.shields.io/badge/Deployed%20on-Render-46E3B7?style=for-the-badge&logo=render" />
 <img src="https://img.shields.io/badge/Stack-React%20%2B%20Node.js%20%2B%20PostgreSQL-c084fc?style=for-the-badge" />
 
 <br/><br/>
@@ -14,7 +14,7 @@
 
 <br/>
 
-**[🌐 Live Demo](https://orbit-production-76b4.up.railway.app) · [📂 GitHub Repo](https://github.com/SamridhiiiGupta/Orbit) · [⚙️ API Health](https://orbit-production-e491.up.railway.app/api/health)**
+**[🌐 Live Demo](https://orbit-51ln.onrender.com) · [📂 GitHub Repo](https://github.com/SamridhiiiGupta/Orbit) · [⚙️ API Health](https://orbit-backend-wp7w.onrender.com/api/health)**
 
 <br/>
 
@@ -98,10 +98,10 @@
 | **HTTP Client** | Axios | API calls with JWT interceptor + auto-logout |
 | **Backend** | Node.js + Express | REST API server |
 | **ORM** | Prisma | Type-safe database access + migrations |
-| **Database** | PostgreSQL (Railway) / SQLite (dev) | Relational data storage |
+| **Database** | PostgreSQL (Neon) / SQLite (dev) | Relational data storage |
 | **Auth** | JWT + bcryptjs | Stateless authentication |
 | **Dev Tools** | Nodemon + Concurrently | Hot reload + unified dev command |
-| **Deployment** | Railway | Full-stack cloud deployment |
+| **Deployment** | Render (frontend + backend) + Neon (database) | Full-stack cloud deployment |
 
 ---
 
@@ -129,7 +129,7 @@
                        │ Prisma ORM
 ┌──────────────────────▼──────────────────────────────────┐
 │                    DATABASE                               │
-│        PostgreSQL (Railway prod) / SQLite (dev)          │
+│          PostgreSQL (Neon prod) / SQLite (dev)           │
 │                                                          │
 │   Users ──< ProjectMembers >── Projects                  │
 │                                     └──< Tasks           │
@@ -283,42 +283,49 @@ CLIENT_URL="http://localhost:5173"      # Frontend URL (exact match required)
 ```env
 # Only needed for production deployment
 # In local dev, Vite proxy handles /api → localhost:5000
-VITE_API_URL="https://your-backend.railway.app"
+VITE_API_URL="https://orbit-backend-wp7w.onrender.com"
 ```
 
 ---
 
-## 🌐 Deployment (Railway)
+## 🌐 Deployment (Render + Neon)
+
+### Database
+
+1. Go to [neon.tech](https://neon.tech) → New Project
+2. Copy the connection string it provides
+3. Update `prisma/schema.prisma`: `provider = "sqlite"` → `provider = "postgresql"`
+4. Locally, set `DATABASE_URL` to the Neon string and run `npx prisma db push` to sync the schema
 
 ### Backend
 
 1. Push code to GitHub
-2. Go to [railway.app](https://railway.app) → New Project → Deploy from GitHub
+2. Go to [render.com](https://render.com) → New → Web Service → connect repo
 3. Set **Root Directory** → `backend`
-4. Add **PostgreSQL** plugin (Railway auto-sets `DATABASE_URL`)
-5. Update `prisma/schema.prisma`: `provider = "sqlite"` → `provider = "postgresql"`
+4. Build command: `npm install`
+5. Start command: `npx prisma generate && node src/index.js`
 6. Set environment variables:
    ```
+   DATABASE_URL=your-neon-connection-string
    JWT_SECRET=your-secret
-   CLIENT_URL=https://your-frontend.railway.app
-   PORT=5000
+   CLIENT_URL=https://your-frontend.onrender.com
    ```
-7. Railway runs: `prisma generate && prisma db push && node src/index.js`
 
 ### Frontend
 
-1. New Railway service → same repo → Root Directory: `frontend`
-2. Build command: `npm run build`
-3. Start command: `npx serve dist -l $PORT`
-4. Set variable: `VITE_API_URL=https://your-backend.railway.app`
+1. New Render service → **Static Site** → same repo → Root Directory: `frontend`
+2. Build command: `npm install && npm run build`
+3. Publish directory: `dist`
+4. Set variable: `VITE_API_URL=https://your-backend.onrender.com`
 
 ### Common Mistakes
 | Mistake | Fix |
 |---|---|
-| `prisma: Permission denied` | Remove `node_modules` from git, add to `.gitignore` |
-| CORS error | `CLIENT_URL` must exactly match frontend URL with `https://` |
-| Blank frontend | Check `VITE_API_URL` is set correctly |
-| DB connection error | Add `DATABASE_URL` as a Railway reference, not manual text |
+| `prisma: command not found` | Use `npx prisma generate`, not the bare `prisma` command — Render doesn't install it globally |
+| `Root directory "backend " does not exist` | Check for a trailing space in the Root Directory field |
+| CORS error | `CLIENT_URL` must exactly match the frontend URL with `https://`, no trailing slash |
+| Blank frontend | Check `VITE_API_URL` is set correctly *before* the build runs — Vite bakes it in at build time |
+| DB connection error | Confirm the full Neon connection string is on one line in `.env`, wrapped in quotes |
 
 ---
 
